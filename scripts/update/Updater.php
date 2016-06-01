@@ -25,6 +25,7 @@ use oat\taoQtiItem\model\SharedLibrariesRegistry;
 use oat\tao\model\ThemeRegistry;
 use oat\tao\model\websource\TokenWebSource;
 use oat\tao\model\ClientLibRegistry;
+use oat\tao\model\ClientLibConfigRegistry;
 
 
 /**
@@ -214,6 +215,19 @@ class Updater extends \common_ext_ExtensionUpdater
 
         $this->setVersion($currentVersion);
         $this->skip('2.12.9', '2.12.16');
+
+        if($this->isVersion('2.12.16')) {
+            ClientLibConfigRegistry::getRegistry()->register(
+                'taoQtiItem/qtiCommonRenderer/renderers/config',
+                array(
+                    'associateDragAndDrop' => true,
+                    'gapMatchDragAndDrop' => true,
+                    'graphicGapMatchDragAndDrop' => true,
+                    'orderDragAndDrop' => true,
+                )
+            );
+            $this->setVersion('2.13.0');
+        }
     }
 
 }
