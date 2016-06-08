@@ -230,6 +230,19 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('2.13.0', '2.13.2');
+
+        if($this->isVersion('2.13.2')){
+            //turning the multi-column option to true
+            $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem');
+            $validation = array(
+                'default' => array(
+                    __DIR__.'/../../model/qti/data/imscp_v1p1.xsd',
+                )
+            );
+            $ext->setConfig('manifestValidation', $validation);
+            $this->setVersion('2.14.0');
+        }
+    }
     }
 
 }
