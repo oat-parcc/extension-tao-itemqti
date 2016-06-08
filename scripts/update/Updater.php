@@ -21,12 +21,14 @@
 
 namespace oat\taoQtiItem\scripts\update;
 
+use oat\taoQtiItem\install\scripts\addValidationSettings;
 use oat\taoQtiItem\model\SharedLibrariesRegistry;
 use oat\tao\model\ThemeRegistry;
 use oat\tao\model\websource\TokenWebSource;
 use oat\tao\model\ClientLibRegistry;
 use oat\tao\model\ClientLibConfigRegistry;
-
+use oat\taoQtiItem\model\update\ItemUpdateInlineFeedback;
+use oat\taoQtiItem\model\ValidationService;
 
 /**
  * 
@@ -231,16 +233,10 @@ class Updater extends \common_ext_ExtensionUpdater
 
         $this->skip('2.13.0', '2.13.2');
 
+
         if($this->isVersion('2.13.2')){
-            //turning the multi-column option to true
-            $ext = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem');
-            $validation = array(
-                'default' => array(
-                    __DIR__.'/../../model/qti/data/imscp_v1p1.xsd',
-                    __DIR__.'/../../model/qti/data/apipv1p0/Core_Level/Package/apipv1p0_imscpv1p2_v1p0.xsd'
-                )
-            );
-            $ext->setConfig('manifestValidation', $validation);
+            $service = new addValidationSettings();
+            $service([]);
             $this->setVersion('2.14.0');
         }
     }
