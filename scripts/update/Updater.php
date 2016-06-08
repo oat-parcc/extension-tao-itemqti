@@ -229,7 +229,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.13.0');
         }
 
-        $this->skip('2.13.0', '2.13.1');
+        $this->skip('2.13.0', '2.13.2');
     }
 
 }

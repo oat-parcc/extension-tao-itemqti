@@ -340,6 +340,13 @@ img.dragging.ui-draggable-dragging {
                     }
                 }
             }
+            &.subpanel {
+                @include simple-border();
+                background-color:white(.8);
+                padding:8px;
+                margin: 5px 0;
+                @include font-size(13);
+            }
         }
     }
 
