@@ -21,13 +21,12 @@
 
 namespace oat\taoQtiItem\scripts\update;
 
-use oat\taoQtiItem\install\scripts\addValidationSettings;
+use oat\oatbox\service\ServiceManager;
 use oat\taoQtiItem\model\SharedLibrariesRegistry;
 use oat\tao\model\ThemeRegistry;
 use oat\tao\model\websource\TokenWebSource;
 use oat\tao\model\ClientLibRegistry;
 use oat\tao\model\ClientLibConfigRegistry;
-use oat\taoQtiItem\model\update\ItemUpdateInlineFeedback;
 use oat\taoQtiItem\model\ValidationService;
 
 /**
@@ -235,11 +234,15 @@ class Updater extends \common_ext_ExtensionUpdater
 
 
         if($this->isVersion('2.13.2')){
-            $service = new addValidationSettings();
-            $service([]);
+            $serviceManager = ServiceManager::getServiceManager();
+
+            //Set Validation service
+            $validationService = new ValidationService();
+            $validationService->setServiceManager($serviceManager);
+            $serviceManager->register(ValidationService::SERVICE_ID, $validationService);
+
             $this->setVersion('2.14.0');
         }
-    }
     }
 
 }

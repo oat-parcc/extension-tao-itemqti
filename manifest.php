@@ -48,7 +48,7 @@ return array(
 			dirname(__FILE__).'/install/local/addPortableContexts.php',
 			dirname(__FILE__).'/install/scripts/addPortableSharedLibraries.php',
 			dirname(__FILE__).'/install/scripts/setDragAndDropConfig.php',
-			'oat\\taoQtiItem\\install\\scripts\\addValidationSettings'
+			dirname(__FILE__).'/install/scripts/addValidationSettings.php',
 		)
 	),
 	'local'	=> array(
