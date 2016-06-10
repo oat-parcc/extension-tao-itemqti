@@ -174,11 +174,7 @@ class ImportService extends tao_models_classes_GenerisService
         $qtiManifestParser = new ManifestParser($manifestFile);
 
         if ($validate) {
-            $basePath = common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem')->getDir();
-            $qtiManifestParser->validateMultiple(array(
-                $basePath . 'model/qti/data/imscp_v1p1.xsd',
-                $basePath . 'model/qti/data/apipv1p0/Core_Level/Package/apipv1p0_imscpv1p2_v1p0.xsd'
-            ));
+            $qtiManifestParser->validate();
 
             if (!$qtiManifestParser->isValid()) {
 
@@ -315,6 +311,7 @@ class ImportService extends tao_models_classes_GenerisService
                 $report->add($itemReport);
             }
         } catch (ValidationException $ve) {
+            common_Logger::i($ve->getMessage());
             $validationReport = \common_report_Report::createFailure("The IMS Manifest file could not be validated");
             $validationReport->add($ve->getReport());
             $report->setMessage(__("No Items could be imported from the given IMS QTI package."));
@@ -568,7 +565,9 @@ class ImportService extends tao_models_classes_GenerisService
                     }
                     $message .= $error->message.' at line : '.$error->line.PHP_EOL;
                 }
-
+                if(empty($files)){
+                    $message = $e->getMessage();
+                }
                 $report = new common_report_Report(common_report_Report::TYPE_ERROR,
                     $message);
             } catch (Exception $e) {
@@ -578,6 +577,7 @@ class ImportService extends tao_models_classes_GenerisService
                 common_Logger::e($e->getMessage());
             }
         } catch (ValidationException $ve) {
+            common_Logger::i($ve->getMessage());
             $validationReport = \common_report_Report::createFailure("The IMS Manifest file could not be validated");
             $validationReport->add($ve->getReport());
             $report->setMessage(__("No Items could be imported from the given IMS QTI package."));
