@@ -49,7 +49,8 @@ class Resource
     protected static $testTypes = array(
         'imsqti_apiptestroot_xmlv2p1',
         'imsqti_test_xmlv2p1',
-        'imsqti_assessment_xmlv2p1'
+        'imsqti_assessment_xmlv2p1',
+        'imsqti_apiptest_xmlv2p2'
     );
     
     /**
