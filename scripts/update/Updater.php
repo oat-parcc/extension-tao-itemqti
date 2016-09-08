@@ -30,14 +30,14 @@ use oat\tao\model\ClientLibConfigRegistry;
 use oat\taoQtiItem\model\ValidationService;
 
 /**
- * 
+ *
  * @author Sam <sam@taotesting.com>
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
 
     /**
-     * 
+     *
      * @param string $initialVersion
      * @return string
      */
@@ -118,21 +118,21 @@ class Updater extends \common_ext_ExtensionUpdater
             $ext->setConfig('qtiCreator', array('multi-column' => false));
             $currentVersion = '2.7.5';
         }
-        
+
         if($currentVersion == '2.7.5'){
 
             $registry->registerFromFile('OAT/sts/stsEventManager', $installBasePath . '/OAT/sts/stsEventManager.js');
 
             $currentVersion = '2.7.6';
         }
-        
+
         if($currentVersion == '2.7.6'){
 
             $registry->registerFromFile('OAT/sts/common', $installBasePath . '/OAT/sts/common.js');
 
             $currentVersion = '2.7.7';
         }
-        
+
         if($currentVersion == '2.7.7'){
 
             $itemThemesDataPath = FILES_PATH.'tao'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR;
@@ -159,12 +159,12 @@ class Updater extends \common_ext_ExtensionUpdater
         if($currentVersion == '2.7.9'){
              $currentVersion = '2.8.0';
         }
-        
+
         if($currentVersion == '2.8.0'){
             $currentVersion = '2.8.1';
             $registry->registerFromFile('OAT/sts/common', $installBasePath . '/OAT/sts/common.js');
         }
-        
+
         if ($currentVersion == '2.8.1') {
             $qtiItem = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem');
             $qtiItem->setConfig('userScripts', array());
@@ -244,7 +244,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.14.0');
         }
 
-        $this->skip('2.14.0', '2.14.3');
+        $this->skip('2.14.0', '2.15.0');
     }
 
 }
