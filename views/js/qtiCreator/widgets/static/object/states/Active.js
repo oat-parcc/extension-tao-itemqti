@@ -26,8 +26,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
     'taoQtiItem/qtiCreator/widgets/static/helpers/inline',
     'ui/previewer',
-    'ui/resourcemgr',
-    'ui/tooltip'
+    'ui/resourcemgr'
 ], function(_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper){
     'use strict';
 
@@ -151,8 +150,8 @@ define([
                 },
                 open : function(){
                     //hide tooltip if displayed
-                    if($src.data('qtip')){
-                        $src.blur().qtip('hide');
+                    if($src.hasClass('tooltipstered')){
+                        $src.blur().tooltipster('hide');
                     }
                 },
                 close : function(){
