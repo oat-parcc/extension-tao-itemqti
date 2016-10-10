@@ -66,11 +66,15 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	}
 	
 	public function buildBasePath() {
-	    return tao_helpers_Uri::getUniqueId($this->getItem()->getUri());
+	    return tao_helpers_Uri::getUniqueId($this->getItem()->getUri()) . '/';
 	}
 	
 	public function buildIdentifier() {
 	    return tao_helpers_Uri::getUniqueId($this->getItem()->getUri());
+	}
+
+	public function buildBaseFilename(){
+		return '';
 	}
 	
 	/**
@@ -91,7 +95,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
       		$fileName = $zipArchive->getNameIndex($i);
       		
       		if (preg_match("@^" . preg_quote($base) . "@", $fileName)) {
-      			if (basename($fileName) == 'qti.xml') {
+      			if (basename($fileName) == $this->getDataFile()) {
       				$qtiFile = $fileName;
       			}
       			else {
@@ -128,23 +132,12 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    }
 		    
 		    // -- Build a brand new IMS Manifest.
-		    $dir = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem')->getDir();
-		    $tpl = ($asApip === false) ? $dir . 'model/qti/templates/imsmanifest.tpl.php' : $dir . 'model/qti/templates/imsmanifestApip.tpl.php';
-		    
-		    $templateRenderer = new taoItems_models_classes_TemplateRenderer($tpl, array(
-		                    'qtiItems' 				=> array($qtiItemData),
-		                    'manifestIdentifier'    => 'MANIFEST-' . tao_helpers_Display::textCleaner(uniqid('tao', true), '-')
-		    ));
-		    	
-		    $renderedManifest = $templateRenderer->render();
-		    $newManifest = new DOMDocument('1.0', TAO_DEFAULT_ENCODING);
-		    $newManifest->loadXML($renderedManifest);
+			$newManifest = $this->renderManifest($options, $qtiItemData);
 		    
 		    if ($this->hasManifest()) {
 		        // Merge old manifest and new one.
 		        $dom1 = $this->getManifest();
 		        $dom2 = $newManifest;
-		        $dom2->loadXML($renderedManifest);
 		        $resourceNodes = $dom2->getElementsByTagName('resource');
 		        $resourcesNodes = $dom1->getElementsByTagName('resources');
 		    
@@ -171,5 +164,28 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    $itemLabel = $this->getItem()->getLabel();
 		    throw new common_Exception("the item '${itemLabel}' involved in the export process has no content.");
 		}
+	}
+
+	protected function renderManifest(array $options, array $qtiItemData)
+	{
+		$asApip = isset($options['apip']) && $options['apip'] === true;
+		$dir = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem')->getDir();
+		$tpl = ($asApip === false) ? $dir . 'model/qti/templates/imsmanifest.tpl.php' : $dir . 'model/qti/templates/imsmanifestApip.tpl.php';
+
+		$templateRenderer = new taoItems_models_classes_TemplateRenderer($tpl, array(
+				'qtiItems' 				=> array($qtiItemData),
+				'manifestIdentifier'    => 'MANIFEST-' . tao_helpers_Display::textCleaner(uniqid('tao', true), '-')
+		));
+
+		$renderedManifest = $templateRenderer->render();
+		$newManifest = new DOMDocument('1.0', TAO_DEFAULT_ENCODING);
+		$newManifest->loadXML($renderedManifest);
+
+		return $newManifest;
+	}
+
+	protected function itemContentPostProcessing($content)
+	{
+		return $content;
 	}
 }

@@ -46,6 +46,12 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     abstract public function buildBasePath();
 
+    abstract public function buildBaseFilename();
+
+    abstract protected function renderManifest(array $options, array $qtiItemData);
+
+    abstract protected function itemContentPostProcessing($content);
+
     /**
      * Overriden export from QTI items.
      *
@@ -64,7 +70,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
         if(is_null($this->getItemModel())){
             throw new ExportException('', 'No Item Model found for item : '.$this->getItem()->getUri());
         }
-        $dataFile = (string) $this->getItemModel()->getOnePropertyValue(new core_kernel_classes_Property(TAO_ITEM_MODEL_DATAFILE_PROPERTY));
+
         $content = $this->getItemService()->getItemContent($this->getItem());
         $resolver = new ItemMediaResolver($this->getItem(), $lang);
         
@@ -97,7 +103,6 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                                 }
 
                             }
-
                             $this->addFile($srcPath, $basePath. '/'.$destPath);
                             $content = str_replace($assetUrl, $replacement, $content);
                         }
@@ -136,9 +141,12 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                 $this->addFile($sourcePath, $destPath);
             }
         }
-        
+
+        // Possibility to delegate (if necessary) some item content post-processing to sub-classes.
+        $content = $this->itemContentPostProcessing($content);
+
         // add xml file
-        $this->getZip()->addFromString($basePath . '/' . $dataFile, $content);
+        $this->getZip()->addFromString($basePath . $this->getDataFile(), $content);
 
         return $report;
 
@@ -150,8 +158,8 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
         $assetParser = new AssetParser($qtiItem);
         $assetParser->setGetSharedLibraries(false);
         $returnValue = array();
-        foreach($assetParser->extract() as $type => $assets) {
-            foreach($assets as $assetUrl) {
+        foreach ($assetParser->extract() as $type => $assets) {
+            foreach ($assets as $assetUrl) {
                 foreach (self::$BLACKLIST as $blacklist) {
                     if (preg_match($blacklist, $assetUrl) === 1) {
                         continue(2);
@@ -161,5 +169,10 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
             }
         }
         return $returnValue;
+    }
+
+    public function getDataFile()
+    {
+        return (string) $this->getItemModel()->getOnePropertyValue(new core_kernel_classes_Property(TAO_ITEM_MODEL_DATAFILE_PROPERTY));
     }
 }
