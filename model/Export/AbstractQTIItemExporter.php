@@ -52,14 +52,9 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     abstract protected function itemContentPostProcessing($content);
 
-    public function buildAssetBasePath($path)
+    public function buildAssetBasePath($path, $rename = true)
     {
         return $this->buildBasePath() . '/' . $path;
-    }
-
-    public function getAssetPathFromItem($filename)
-    {
-        return $filename;
     }
 
     /**
@@ -100,8 +95,6 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                             if($mediaAsset->getMediaIdentifier() !== $fileInfo['uri']){
                                 $replacement = $filename;
                             }
-
-
                             $destPath = ltrim($filename, '/');
                         } else {
                             $destPath = $replacement = basename($srcPath);
@@ -114,10 +107,9 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                                 //try to get embedded assets of shared stimulus
                                 $files = SharedStimulus::prepareExportedFile($srcPath, $resolver);
                                 foreach($files as $dest => $src){
-                                    $this->addFile($src, $this->buildAssetBasePath($dest));
+                                    $this->addFile($src, $this->buildAssetBasePath($dest, false));
                                 }
                             }
-
                             $this->addFile($srcPath, $this->buildAssetBasePath($destPath));
                             $content = str_replace($assetUrl, $replacement, $content);
                         }
