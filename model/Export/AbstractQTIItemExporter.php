@@ -101,10 +101,14 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                                 $replacement = $filename;
                             }
 
+
                             $destPath = ltrim($filename, '/');
                         } else {
                             $destPath = $replacement = basename($srcPath);
                         }
+
+                        $replacement = $this->buildAssetBasePath($replacement);
+
                         if (file_exists($srcPath)) {
                             if($type === 'xinclude'){
                                 //try to get embedded assets of shared stimulus
