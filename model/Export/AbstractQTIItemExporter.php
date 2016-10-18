@@ -52,6 +52,16 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     abstract protected function itemContentPostProcessing($content);
 
+    public function buildAssetBasePath($path)
+    {
+        return $this->buildBasePath() . '/' . $path;
+    }
+
+    public function getAssetPathFromItem($filename)
+    {
+        return $filename;
+    }
+
     /**
      * Overriden export from QTI items.
      *
@@ -73,7 +83,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
         $content = $this->getItemService()->getItemContent($this->getItem());
         $resolver = new ItemMediaResolver($this->getItem(), $lang);
-        
+
         // get the local resources and add them
         foreach ($this->getAssets($this->getItem(), $lang) as $type => $assets) {
             foreach($assets as $assetUrl){
@@ -90,7 +100,8 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                             if($mediaAsset->getMediaIdentifier() !== $fileInfo['uri']){
                                 $replacement = $filename;
                             }
-                            $destPath = ltrim($filename,'/');
+
+                            $destPath = ltrim($filename, '/');
                         } else {
                             $destPath = $replacement = basename($srcPath);
                         }
@@ -99,11 +110,11 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                                 //try to get embedded assets of shared stimulus
                                 $files = SharedStimulus::prepareExportedFile($srcPath, $resolver);
                                 foreach($files as $dest => $src){
-                                    $this->addFile($src, $basePath. '/'.$dest);
+                                    $this->addFile($src, $this->buildAssetBasePath($dest));
                                 }
-
                             }
-                            $this->addFile($srcPath, $basePath. '/'.$destPath);
+
+                            $this->addFile($srcPath, $this->buildAssetBasePath($destPath));
                             $content = str_replace($assetUrl, $replacement, $content);
                         }
                     }

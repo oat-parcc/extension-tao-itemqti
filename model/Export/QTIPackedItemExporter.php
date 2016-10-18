@@ -76,35 +76,33 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	public function buildBaseFilename(){
 		return '';
 	}
-	
+
 	/**
 	 * Build, merge and export the IMS Manifest into the target ZIP archive.
-	 * 
-	 * @throws 
+	 *
+	 * @throws
 	 */
-	public function exportManifest($options = array()) {
-	    
+	public function exportManifest($options = array())
+    {
 	    $asApip = isset($options['apip']) && $options['apip'] === true;
 	    
 	    $base = $this->buildBasePath();
 		$zipArchive = $this->getZip();
 		$qtiFile = '';
-		$qtiResources = array();
-		
-		for ($i = 0; $i < $zipArchive->numFiles; $i++) {
-      		$fileName = $zipArchive->getNameIndex($i);
-      		
-      		if (preg_match("@^" . preg_quote($base) . "@", $fileName)) {
-      			if (basename($fileName) == $this->getDataFile()) {
-      				$qtiFile = $fileName;
-      			}
-      			else {
-      				$qtiResources[] = $fileName;
-      			}
-      		}
- 		}
 
-		$qtiItemService = Service::singleton();
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $fileName = $zipArchive->getNameIndex($i);
+            $fileName = preg_replace('/(\/+)/','/', $fileName);
+            if (preg_match("@^" . preg_quote($base) . "@", $fileName)) {
+                if (basename($fileName) == $this->getDataFile()) {
+                    $qtiFile = $fileName;
+                }
+            }
+        }
+
+        $qtiResources = $this->getQtiResourcesFromItem();
+
+        $qtiItemService = Service::singleton();
         
 		//@todo add support of multi language packages
         $rdfItem = $this->getItem();
@@ -124,7 +122,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    $qtiItemData['toolName'] = $qtiItem->getAttributeValue('toolVendor');
 		    $qtiItemData['toolVersion'] = $qtiItem->getAttributeValue('toolVersion');
 		    $qtiItemData['interactions'] = array();
-            
+
 		    foreach ($qtiItem->getInteractions() as $interaction) {
 		        $interactionData = array();
 		        $interactionData['type'] = $interaction->getQtiTag();
@@ -133,7 +131,6 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    
 		    // -- Build a brand new IMS Manifest.
 			$newManifest = $this->renderManifest($options, $qtiItemData);
-		    
 		    if ($this->hasManifest()) {
 		        // Merge old manifest and new one.
 		        $dom1 = $this->getManifest();
@@ -142,8 +139,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		        $resourcesNodes = $dom1->getElementsByTagName('resources');
 		    
 		        foreach ($resourcesNodes as $resourcesNode) {
-		    
-		            foreach ($resourceNodes as $resourceNode) {
+                    foreach ($resourceNodes as $resourceNode) {
 		                $newResourceNode = $dom1->importNode($resourceNode, true);
 		                $resourcesNode->appendChild($newResourceNode);
 		            }
@@ -188,4 +184,20 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	{
 		return $content;
 	}
+
+	protected function getQtiResourcesFromItem()
+    {
+        $zipArchive = $this->getZip();
+        $qtiResources = [];
+        for ($i = 0; $i < $zipArchive->numFiles; $i++) {
+            $fileName = $zipArchive->getNameIndex($i);
+            $fileName = preg_replace('/(\/+)/','/', $fileName);
+            if (preg_match("@^" . preg_quote($this->buildBasePath()) . "@", $fileName)) {
+                if (basename($fileName) != $this->getDataFile()) {
+                    $qtiResources[] = $fileName;
+                }
+            }
+        }
+        return $qtiResources;
+    }
 }
