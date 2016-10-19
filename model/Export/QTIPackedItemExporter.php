@@ -59,10 +59,14 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	    return $this->getManifest() !== null;
 	}
 	
-	public function export($options = array()) {
-		$report = parent::export($options);
-		$this->exportManifest($options);
-        return $report;
+	public function export($options = array())
+    {
+        if (!$this->containsItem()) {
+            $report = parent::export($options);
+            $this->exportManifest($options);
+            return $report;
+        }
+        return \common_report_Report::createSuccess();
 	}
 	
 	public function buildBasePath() {
@@ -199,5 +203,24 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
             }
         }
         return $qtiResources;
+    }
+
+    /**
+     * Whenever the item is already in the manifest
+     * @return boolean
+     */
+    protected function containsItem()
+    {
+        $found = false;
+        if ($this->hasManifest()) {
+            foreach ($this->getManifest()->getElementsByTagName('resource') as $resourceNode) {
+                /** @var \DOMElement $resourceNode */
+                if ($resourceNode->getAttribute('identifier') == $this->buildIdentifier()) {
+                    $found = true;
+                    break;
+                }
+            }
+        }
+        return $found;
     }
 }
