@@ -61,7 +61,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	
 	public function export($options = array())
     {
-        if (!$this->containsItem()) {
+        if (! $this->containsItem()) {
             $report = parent::export($options);
             $this->exportManifest($options);
             return $report;
@@ -76,6 +76,11 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 	public function buildIdentifier() {
 	    return tao_helpers_Uri::getUniqueId($this->getItem()->getUri());
 	}
+
+	public function buildResourceIdentifier()
+    {
+        return $this->buildIdentifier();
+    }
 
 	public function buildBaseFilename(){
 		return '';
@@ -118,7 +123,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    $qtiItemData = array();
 		    
 		    // alter identifier for export to avoid any "clash".
-		    $qtiItemData['identifier'] = $this->buildIdentifier();
+		    $qtiItemData['identifier'] = $this->buildResourceIdentifier();
 		    $qtiItemData['filePath'] = $qtiFile;
 		    $qtiItemData['medias'] = $qtiResources;
 		    $qtiItemData['adaptive'] = ($qtiItem->getAttributeValue('adaptive') === 'adaptive') ? true : false;
