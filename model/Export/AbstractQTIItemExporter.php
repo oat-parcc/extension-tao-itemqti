@@ -180,6 +180,6 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     public function getDataFile()
     {
-        return (string) $this->getItemModel()->getOnePropertyValue(new core_kernel_classes_Property(TAO_ITEM_MODEL_DATAFILE_PROPERTY));
+        return (string) $this->getItemModel()->getOnePropertyValue(new core_kernel_classes_Property(\taoItems_models_classes_ItemsService::TAO_ITEM_MODEL_DATAFILE_PROPERTY));
     }
 }
