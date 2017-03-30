@@ -57,6 +57,11 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
         return $this->buildBasePath() . '/' . $path;
     }
 
+    public function buildItemAssetBasePath($path, $rename = true)
+    {
+        return $path;
+    }
+
     /**
      * Overriden export from QTI items.
      *
@@ -100,7 +105,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                             $destPath = $replacement = basename($srcPath);
                         }
 
-                        $replacement = $this->buildAssetBasePath($replacement);
+                        $replacement = $this->buildItemAssetBasePath($replacement);
 
                         if (file_exists($srcPath)) {
                             if($type === 'xinclude'){
@@ -162,6 +167,9 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
     protected function getAssets(\core_kernel_classes_Resource $item, $lang)
     {
         $qtiItem = Service::singleton()->getDataItemByRdfItem($item, $lang);
+        if (is_null($qtiItem)) {
+            return [];
+        }
         $assetParser = new AssetParser($qtiItem);
         $assetParser->setGetSharedLibraries(false);
         $returnValue = array();
