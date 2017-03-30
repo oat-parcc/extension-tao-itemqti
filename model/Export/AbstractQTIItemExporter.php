@@ -57,6 +57,11 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
         return $this->buildBasePath() . '/' . $path;
     }
 
+    public function buildItemAssetBasePath($path, $rename = true)
+    {
+        return $path;
+    }
+
     /**
      * Overriden export from QTI items.
      *
@@ -100,7 +105,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                             $destPath = $replacement = basename($srcPath);
                         }
 
-                        $replacement = $this->buildAssetBasePath($replacement);
+                        $replacement = $this->buildItemAssetBasePath($replacement);
 
                         if (file_exists($srcPath)) {
                             if($type === 'xinclude'){
