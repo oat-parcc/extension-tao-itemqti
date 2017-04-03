@@ -54,7 +54,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     public function buildAssetBasePath($path, $rename = true)
     {
-        return $this->buildBasePath() . '/' . $path;
+        return $this->buildBasePath() . $path;
     }
 
     public function buildItemAssetBasePath($path, $rename = true)
