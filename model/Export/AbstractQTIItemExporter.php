@@ -54,7 +54,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
 
     public function buildAssetBasePath($path, $rename = true)
     {
-        return rtrim($this->buildBasePath(), '/') . '/' . $path;
+        return rtrim($this->buildBasePath(), '/\\') . DIRECTORY_SEPARATOR . $path;
     }
 
     public function buildItemAssetBasePath($path, $rename = true)
@@ -100,7 +100,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
                             if($mediaAsset->getMediaIdentifier() !== $fileInfo['uri']){
                                 $replacement = $filename;
                             }
-                            $destPath = ltrim($filename, '/');
+                            $destPath = ltrim($filename, '/\\');
                         } else {
                             $destPath = $replacement = basename($srcPath);
                         }
