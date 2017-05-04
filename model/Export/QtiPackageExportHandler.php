@@ -21,6 +21,9 @@
 
 namespace oat\taoQtiItem\model\Export;
 
+use oat\oatbox\PhpSerializable;
+use oat\oatbox\PhpSerializeStateless;
+use oat\taoQtiItem\model\ItemModel;
 use \tao_models_classes_export_ExportHandler;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
@@ -29,7 +32,6 @@ use \tao_helpers_File;
 use \Exception;
 use \ZipArchive;
 use \common_Logger;
-use oat\taoQtiItem\model\ItemModel;
 
 /**
  * Short description of class oat\taoQtiItem\model\ItemModel
@@ -39,9 +41,10 @@ use oat\taoQtiItem\model\ItemModel;
  * @package taoQTI
  
  */
-class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
+class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler, PhpSerializable
 {
 
+    use PhpSerializeStateless;
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::getLabel()
