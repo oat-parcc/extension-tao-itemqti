@@ -22,12 +22,15 @@
 namespace oat\taoQtiItem\scripts\update;
 
 use oat\oatbox\service\ServiceManager;
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoQtiItem\model\ItemModel;
 use oat\taoQtiItem\model\SharedLibrariesRegistry;
 use oat\tao\model\ThemeRegistry;
 use oat\tao\model\websource\TokenWebSource;
 use oat\tao\model\ClientLibRegistry;
 use oat\tao\model\ClientLibConfigRegistry;
 use oat\taoQtiItem\model\ValidationService;
+use oat\taoQtiItem\scripts\install\SetItemModel;
 
 /**
  *
@@ -245,6 +248,13 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('2.14.0', '2.16.2');
+
+        if ($this->isVersion('2.16.2')) {
+            OntologyUpdater::syncModels();
+            $script = new ItemModel();
+            call_user_func($script);
+            $this->setVersion('2.17.0');
+        }
     }
 
 }
