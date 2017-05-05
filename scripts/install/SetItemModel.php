@@ -42,8 +42,7 @@ class SetItemModel  extends InstallAction
         $options = [
             ItemModel::EXPORT_HANDLER => [
                 new ApipPackageExportHandler(),
-                new QtiPackageExportHandler(),
-                new QtiPackage22ExportHandler()
+                new QtiPackageExportHandler()
             ],
             ItemModel::IMPORT_HANDLER => [
                 new QtiItemImport(),
@@ -56,12 +55,10 @@ class SetItemModel  extends InstallAction
             \common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem')->unsetConfig(ItemModel::COMPILER);
         }
 
-        \common_Logger::w(print_r($options,true));
         $itemModelService = new ItemModel($options);
 
         $itemModelService->setServiceManager($this->getServiceManager());
 
-        \common_Logger::w(print_r($itemModelService,true));
         $this->getServiceManager()->register(ItemModel::SERVICE_ID, $itemModelService);
 
     }

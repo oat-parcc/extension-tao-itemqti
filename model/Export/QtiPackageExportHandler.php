@@ -90,11 +90,11 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
 					throw new Exception('Unable to create archive at '.$path);
 				}
 
-				$manifest = null;
+				$manifest = $this->createManifest();
 				foreach($instances as $instance){
 					$item = new core_kernel_classes_Resource($instance);
 					if($itemService->hasItemModel($item, array(ItemModel::MODEL_URI))){
-						$exporter = new QTIPackedItemExporter($item, $zipArchive, $manifest);
+						$exporter = $this->createExporter($item, $zipArchive, $manifest);
 
                         try {
                             $subReport = $exporter->export();
@@ -118,5 +118,16 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
 			}
 		}
 		return $report;
+    }
+
+
+    protected function createExporter(\core_kernel_classes_Resource $itemResource, \ZipArchive $zip, \DOMDocument $manifest)
+    {
+        return new QTIPackedItemExporter($itemResource, $zip, $manifest);
+    }
+
+    protected function createManifest()
+    {
+        return null;
     }
 }
