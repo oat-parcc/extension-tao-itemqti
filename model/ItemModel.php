@@ -21,6 +21,7 @@
 
 namespace oat\taoQtiItem\model;
 
+use oat\oatbox\service\ConfigurableService;
 use oat\taoQtiItem\model\Export\ApipPackageExportHandler;
 use oat\taoQtiItem\model\import\ApipPackageImport;
 use oat\taoQtiItem\model\qti\Service;
@@ -42,14 +43,19 @@ use taoItems_models_classes_itemModel;
  * @package taoQTI
  
  */
-class ItemModel
+class ItemModel extends ConfigurableService
         implements taoItems_models_classes_itemModel,
                    tao_models_classes_export_ExportProvider,
                    tao_models_classes_import_ImportProvider
 {
 
+    const SERVICE_ID = 'taoQtiItem/ItemModel';
     const MODEL_URI = "http://www.tao.lu/Ontologies/TAOItem.rdf#QTI";
-    
+
+    const COMPILER = 'compilerClass';
+    const IMPORT_HANDLER = 'importHandlers';
+    const EXPORT_HANDLER = 'exportHandlers';
+
     /**
      * constructor called by itemService
      *
@@ -57,8 +63,9 @@ class ItemModel
      * @author Joel Bout, <joel@taotesting.com>
      * @return mixed
      */
-    public function __construct()
+    public function __construct($options = array())
     {
+        parent::__construct($options);
         // ensure qti extension is loaded
         common_ext_ExtensionsManager::singleton()->getExtensionById('taoQtiItem');
     }
@@ -108,27 +115,32 @@ class ItemModel
         )); 
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see tao_models_classes_export_ExportProvider::getExportHandlers()
-     */
-    public function getExportHandlers() {
-    	return array(
-    	    new ApipPackageExportHandler(),
-    		new QtiPackageExportHandler()
-    	);
-    }
-    
-    public function getImportHandlers() {
-    	return array(
-    	    new ApipPackageImport(),
-    		new QtiItemImport(),
-    	    new QtiPackageImport(),
-    	);
+
+    public function getExportHandlers()
+    {
+        if($this->hasOption(self::EXPORT_HANDLER)){
+            return $this->getOption(self::EXPORT_HANDLER);
+        } else {
+            return array();
+        }
     }
 
-    public function getCompilerClass() {
-        return 'oat\\taoQtiItem\\model\\QtiItemCompiler';
+    public function getImportHandlers()
+    {
+        if($this->hasOption(self::IMPORT_HANDLER)){
+            return $this->getOption(self::IMPORT_HANDLER);
+        } else {
+            return array();
+        }
+    }
+
+    public function getCompilerClass()
+    {
+        if($this->hasOption(self::COMPILER)){
+            return $this->getOption(self::COMPILER);
+        } else {
+            return array();
+        }
     }
 
     public function getPackerClass() {
