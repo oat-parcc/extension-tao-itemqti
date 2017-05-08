@@ -21,6 +21,9 @@
 
 namespace oat\taoQtiItem\model\Export;
 
+use oat\oatbox\PhpSerializable;
+use oat\oatbox\PhpSerializeStateless;
+use oat\taoQtiItem\model\ItemModel;
 use \tao_models_classes_export_ExportHandler;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
@@ -29,7 +32,6 @@ use \tao_helpers_File;
 use \Exception;
 use \ZipArchive;
 use \common_Logger;
-use oat\taoQtiItem\model\ItemModel;
 
 /**
  * Short description of class oat\taoQtiItem\model\ItemModel
@@ -39,9 +41,10 @@ use oat\taoQtiItem\model\ItemModel;
  * @package taoQTI
  
  */
-class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
+class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler, PhpSerializable
 {
 
+    use PhpSerializeStateless;
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_export_ExportHandler::getLabel()
@@ -87,11 +90,11 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
 					throw new Exception('Unable to create archive at '.$path);
 				}
 
-				$manifest = null;
+				$manifest = $this->createManifest();
 				foreach($instances as $instance){
 					$item = new core_kernel_classes_Resource($instance);
 					if($itemService->hasItemModel($item, array(ItemModel::MODEL_URI))){
-						$exporter = new QTIPackedItemExporter($item, $zipArchive, $manifest);
+						$exporter = $this->createExporter($item, $zipArchive, $manifest);
 
                         try {
                             $subReport = $exporter->export();
@@ -115,5 +118,16 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
 			}
 		}
 		return $report;
+    }
+
+
+    protected function createExporter(\core_kernel_classes_Resource $itemResource, \ZipArchive $zip, \DOMDocument $manifest)
+    {
+        return new QTIPackedItemExporter($itemResource, $zip, $manifest);
+    }
+
+    protected function createManifest()
+    {
+        return null;
     }
 }
