@@ -50,7 +50,7 @@ return array(
 			dirname(__FILE__).'/install/scripts/addPortableSharedLibraries.php',
 			dirname(__FILE__).'/install/scripts/setDragAndDropConfig.php',
 			dirname(__FILE__).'/install/scripts/addValidationSettings.php',
-			dirname(__FILE__).'/scripts/install/SetItemModel.php'
+			dirname(__FILE__).'/install/scripts/setItemModel.php'
 		)
 	),
 	'local'	=> array(
