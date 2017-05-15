@@ -255,7 +255,7 @@ class Updater extends \common_ext_ExtensionUpdater
             call_user_func($script, []);
             $this->setVersion('2.17.0');
         }
-        $this->skip('2.17.0', '2.17.3');
+        $this->skip('2.17.0', '2.17.4');
     }
 
 }

@@ -71,7 +71,7 @@ abstract class AbstractQTIItemExporter extends taoItems_models_classes_ItemExpor
      */
     public function export($options = array())
     {
-        $report = \common_report_Report::createSuccess();
+        $report = \common_report_Report::createSuccess(__('item %s successfully updated', $this->getItem()->getLabel()));
         $asApip = isset($options['apip']) && $options['apip'] === true;
         
         $lang = \common_session_SessionManager::getSession()->getDataLanguage();

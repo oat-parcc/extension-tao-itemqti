@@ -101,6 +101,7 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
                             $manifest = $exporter->getManifest();
                             $report->add($subReport);
                         } catch (\Exception $e) {
+                            $report->add(\common_report_Report::createFailure(__('Error to export item %s: %s', $instance, $e->getMessage())));
                             common_Logger::i(__('Error to export item %s: %s', $instance, $e->getMessage()));
                         }
 					}
@@ -121,7 +122,7 @@ class QtiPackageExportHandler implements tao_models_classes_export_ExportHandler
     }
 
 
-    protected function createExporter(\core_kernel_classes_Resource $itemResource, \ZipArchive $zip, \DOMDocument $manifest)
+    protected function createExporter(\core_kernel_classes_Resource $itemResource, \ZipArchive $zip, \DOMDocument $manifest = null)
     {
         return new QTIPackedItemExporter($itemResource, $zip, $manifest);
     }
