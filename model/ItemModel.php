@@ -139,7 +139,7 @@ class ItemModel extends ConfigurableService
         if($this->hasOption(self::COMPILER)){
             return $this->getOption(self::COMPILER);
         } else {
-            return array();
+            return '';
         }
     }
 
