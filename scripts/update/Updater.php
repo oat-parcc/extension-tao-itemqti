@@ -23,6 +23,7 @@ namespace oat\taoQtiItem\scripts\update;
 
 use oat\oatbox\service\ServiceManager;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoQtiItem\model\ItemModel;
 use oat\taoQtiItem\model\SharedLibrariesRegistry;
 use oat\tao\model\ThemeRegistry;
 use oat\tao\model\websource\TokenWebSource;
@@ -256,6 +257,19 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.17.0');
         }
         $this->skip('2.17.0', '2.17.5');
+
+        if ($this->isVersion('2.17.5')) {
+            $serviceManager = $this->getServiceManager();
+            /** @var \oat\taoQtiTest\models\TestModelService $itemModelService */
+            $itemModelService = $serviceManager->get(ItemModel::SERVICE_ID);
+
+            if(empty($itemModelService->getCompilerClass())){
+                $itemModelService->setOption(ItemModel::COMPILER, 'oat\\taoQtiItem\\model\\QtiItemCompiler');
+            }
+
+            $serviceManager->register(ItemModel::SERVICE_ID, $itemModelService);
+            $this->setVersion('2.17.6');
+        }
     }
 
 }
