@@ -32,6 +32,7 @@ use core_kernel_versioning_Repository;
 use DOMDocument;
 use Exception;
 use helpers_File;
+use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\MediaService;
 use oat\taoItems\model\media\ItemMediaResolver;
 use oat\taoItems\model\media\LocalItemSource;
@@ -55,8 +56,10 @@ use taoItems_models_classes_ItemsService;
  * @author Joel Bout, <joel.bout@tudor.lu>
  * @package taoQTI
  */
-class ImportService extends tao_models_classes_GenerisService
+class ImportService extends ConfigurableService
 {
+
+    const SERVICE_ID = 'taoQtiItem/importService';
 
     /**
      * Short description of method importQTIFile
@@ -454,6 +457,9 @@ class ImportService extends tao_models_classes_GenerisService
                             SharedStimulusImporter::isValidSharedStimulus($auxFile);
                             // embed assets in the shared stimulus
                             $newXmlFile = SharedStimulusPackageImporter::embedAssets($auxFile);
+
+                            $this->sharedStimulusPostProcessing($newXmlFile);
+
                             $info = $sharedStorage->add($newXmlFile, basename($auxFile), $name);
                             if (method_exists($sharedStorage, 'forceMimeType')) {
                                 // add() does not return link, so we need to parse it
@@ -503,6 +509,9 @@ class ImportService extends tao_models_classes_GenerisService
                                 SharedStimulusImporter::isValidSharedStimulus($auxFile);
                                 // embed assets in the shared stimulus
                                 $newXmlFile = SharedStimulusPackageImporter::embedAssets($auxFile);
+
+                                $this->sharedStimulusPostProcessing($newXmlFile);
+
                                 $info = $sharedStorage->add($newXmlFile, basename($auxFile), $name);
                                 if (method_exists($sharedStorage, 'forceMimeType')) {
                                     // add() does not return link, so we need to parse it
@@ -623,6 +632,15 @@ class ImportService extends tao_models_classes_GenerisService
     }
 
     /**
+     * @param $xmlFile string the path to the file to post process
+     * @return void
+     */
+    public function sharedStimulusPostProcessing($xmlFile)
+    {
+
+    }
+
+        /**
      * @param array $items
      * @param common_report_Report $report
      * @throws common_exception_Error
