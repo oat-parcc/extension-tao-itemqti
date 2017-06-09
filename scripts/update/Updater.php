@@ -30,6 +30,7 @@ use oat\tao\model\websource\TokenWebSource;
 use oat\tao\model\ClientLibRegistry;
 use oat\tao\model\ClientLibConfigRegistry;
 use oat\taoQtiItem\model\ValidationService;
+use oat\taoQtiItem\scripts\install\SetImportService;
 use oat\taoQtiItem\scripts\install\SetItemModel;
 
 /**
@@ -269,6 +270,14 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $serviceManager->register(ItemModel::SERVICE_ID, $itemModelService);
             $this->setVersion('2.17.6');
+        }
+
+        if ($this->isVersion('2.17.6')) {
+            $script = new SetImportService();
+            $script->setServiceLocator($this->getServiceManager());
+            call_user_func($script, []);
+
+            $this->setVersion('2.18.0');
         }
     }
 
