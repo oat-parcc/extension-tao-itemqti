@@ -33,6 +33,7 @@ use DOMDocument;
 use Exception;
 use helpers_File;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaService;
 use oat\taoItems\model\media\ItemMediaResolver;
 use oat\taoItems\model\media\LocalItemSource;
@@ -60,6 +61,18 @@ class ImportService extends ConfigurableService
 {
 
     const SERVICE_ID = 'taoQtiItem/importService';
+
+
+    /**
+     * Keep backward compatibility
+     *
+     * @deprecated please use the serviceManager get
+     */
+    public static function singleton()
+    {
+        return ServiceManager::getServiceManager()->get(self::SERVICE_ID);
+    }
+
 
     /**
      * Short description of method importQTIFile
