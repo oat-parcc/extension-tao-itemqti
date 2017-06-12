@@ -26,7 +26,7 @@ return array(
     'label' => 'QTI item model',
 	'description' => 'TAO QTI item model',
     'license' => 'GPL-2.0',
-    'version' => '2.17.6',
+    'version' => '2.18.0',
     'author' => 'Open Assessment Technologies',
     'requires' => array(
         'taoItems' => '>=2.9.10',
@@ -50,7 +50,8 @@ return array(
 			dirname(__FILE__).'/install/scripts/addPortableSharedLibraries.php',
 			dirname(__FILE__).'/install/scripts/setDragAndDropConfig.php',
 			dirname(__FILE__).'/install/scripts/addValidationSettings.php',
-			dirname(__FILE__).'/install/scripts/setItemModel.php'
+			dirname(__FILE__).'/install/scripts/setItemModel.php',
+			dirname(__FILE__).'/install/scripts/setImportService.php'
 		)
 	),
 	'local'	=> array(
