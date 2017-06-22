@@ -279,6 +279,8 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('2.18.0');
         }
+
+        $this->skip('2.18.0', '2.19.0');
     }
 
 }
