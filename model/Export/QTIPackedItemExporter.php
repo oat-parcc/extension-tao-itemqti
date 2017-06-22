@@ -141,21 +141,7 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    // -- Build a brand new IMS Manifest.
 			$newManifest = $this->renderManifest($options, $qtiItemData);
 		    if ($this->hasManifest()) {
-		        // Merge old manifest and new one.
-		        $dom1 = $this->getManifest();
-		        $dom2 = $newManifest;
-		        $resourceNodes = $dom2->getElementsByTagName('resource');
-		        $resourcesNodes = $dom1->getElementsByTagName('resources');
-		    
-		        foreach ($resourcesNodes as $resourcesNode) {
-                    foreach ($resourceNodes as $resourceNode) {
-		                $newResourceNode = $dom1->importNode($resourceNode, true);
-		                $resourcesNode->appendChild($newResourceNode);
-		            }
-		        }
-		    
-		        // rendered manifest is now useless.
-		        unset($dom2);
+		        $this->mergeManifests($this->getManifest(), $newManifest);
 		    }
 		    else {
 		        // Brand new manifest.
@@ -170,6 +156,24 @@ class QTIPackedItemExporter extends AbstractQTIItemExporter {
 		    throw new common_Exception("the item '${itemLabel}' involved in the export process has no content.");
 		}
 	}
+
+    /**
+     * @param DOMDocument $original
+     * @param DOMDocument $new
+     */
+	protected function mergeManifests($original, $new)
+    {
+        // Merge old manifest and new one.
+        $resourceNodes = $new->getElementsByTagName('resource');
+        $resourcesNodes = $original->getElementsByTagName('resources');
+
+        foreach ($resourcesNodes as $resourcesNode) {
+            foreach ($resourceNodes as $resourceNode) {
+                $newResourceNode = $original->importNode($resourceNode, true);
+                $resourcesNode->appendChild($newResourceNode);
+            }
+        }
+    }
 
 	protected function renderManifest(array $options, array $qtiItemData)
 	{
